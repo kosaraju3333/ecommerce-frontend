@@ -1,9 +1,11 @@
-// import { Component, OnInit } from '@angular/core';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
 
 import { Product } from '../../models/product';
 import { ProductService } from '../../services/product';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-product-list',
@@ -18,8 +20,18 @@ export class ProductList implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    private router: Router
   ) {}
+
+  goToAddProduct(): void {
+    this.router.navigate(['/add-product']);
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -53,4 +65,41 @@ export class ProductList implements OnInit {
     });
 
   }
+
+
+  editProduct(product: Product): void {
+    console.log('Edit product:', product);
+  }
+
+  deleteProduct(product: Product): void {
+
+    const confirmed = confirm(
+      `Are you sure you want to delete ${product.name}?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.productService.deleteProduct(product.id).subscribe({
+
+      next: (response) => {
+
+      console.log('Delete response:', response);
+
+      alert('Product deleted successfully!');
+
+      this.loadProducts();
+    },
+
+    error: (error) => {
+
+      console.error('Delete failed:', error);
+
+      alert('Failed to delete product');
+    }
+
+  });
+}
+
 }

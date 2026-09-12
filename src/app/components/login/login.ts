@@ -26,20 +26,13 @@ export class Login {
       this.password
     ).subscribe({
 
+
       next: (response) => {
 
         console.log('Login successful!');
         console.log('Response:', response);
 
-        localStorage.setItem(
-          'access_token',
-          response.access_token
-        );
-
-        localStorage.setItem(
-          'user',
-          JSON.stringify(response.user)
-        );
+        this.authService.saveSession(response);
 
         console.log('JWT stored successfully');
         console.log('User stored:', response.user);

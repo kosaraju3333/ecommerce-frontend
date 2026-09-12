@@ -1,7 +1,13 @@
-<!-- <app-product-list></app-product-list>
+<router-outlet></router-outlet>
+
+<!-- <app-login></app-login>
 
 <hr>
 
-<app-add-product></app-add-product> -->
+<div *ngIf="authService.isAdmin()">
+  <app-add-product></app-add-product>
 
-<app-login></app-login>
+<hr>
+</div>
+
+<app-product-list></app-product-list> -->
