@@ -4,15 +4,28 @@
 
     <h1>My E-Commerce Store</h1>
 
-    <button
-      *ngIf="isAdmin()"
-      class="add-product-button"
-      (click)="goToAddProduct()"
-    >
-      + Add Product
-    </button>
+    <div class="header-actions">
+
+      <button
+        *ngIf="isAdmin()"
+        class="add-product-button"
+        (click)="goToAddProduct()"
+      >
+        + Add Product
+      </button>
+
+      <button
+        *ngIf="isLoggedIn()"
+        class="cart-button"
+        (click)="goToCart()"
+      >
+        🛒 Cart ({{ cartCount }})
+      </button>
+
+    </div>
 
   </div>
+
 
   <p class="product-count">
     Total Products: {{ products.length }}
@@ -53,8 +66,11 @@
           Stock: {{ product.stock_quantity }}
         </p>
 
-        <button>
-          Add to Cart
+        <button
+          (click)="addToCart(product)"
+          [disabled]="product.stock_quantity <= 0"
+        >
+          {{ product.stock_quantity > 0 ? 'Add to Cart' : 'Out of Stock' }}
         </button>
 
         <div

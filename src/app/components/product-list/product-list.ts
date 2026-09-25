@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Product } from '../../models/product';
 import { ProductService } from '../../services/product';
 import { AuthService } from '../../services/auth';
+import { CartService } from '../../services/cart';
 
 @Component({
   selector: 'app-product-list',
@@ -17,11 +18,13 @@ import { AuthService } from '../../services/auth';
 export class ProductList implements OnInit {
 
   products: Product[] = [];
+  cartCount: number = 0;
 
   constructor(
     private productService: ProductService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
+    private cartService: CartService,
     private router: Router
   ) {}
 
@@ -33,8 +36,16 @@ export class ProductList implements OnInit {
     return this.authService.isAdmin();
   }
 
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
   ngOnInit(): void {
     this.loadProducts();
+
+    if (this.authService.isLoggedIn()) {
+      this.loadCartCount();
+    }
   }
 
   loadProducts(): void {
@@ -69,6 +80,8 @@ export class ProductList implements OnInit {
 
   editProduct(product: Product): void {
     console.log('Edit product:', product);
+    
+    this.router.navigate(['/edit-product', product.id]);
   }
 
   deleteProduct(product: Product): void {
@@ -100,6 +113,78 @@ export class ProductList implements OnInit {
     }
 
   });
-}
 
+  }
+
+  addToCart(product: Product): void {
+
+    console.log('Adding product to cart:', product);
+
+    this.cartService
+      .addToCart(product.id, 1)
+      .subscribe({
+
+        next: (response) => {
+
+          console.log(
+            'Product added to cart:',
+            response
+          );
+
+          this.loadCartCount();
+
+          alert(`${product.name} added to cart!`);
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Failed to add product to cart:',
+            error
+          );
+
+          if (error.status === 401) {
+            alert('Please login to add products to cart');
+            return;
+          }
+
+          if (error.error?.detail) {
+            alert(error.error.detail);
+            return;
+          }
+
+          alert('Failed to add product to cart');
+        }
+
+      });
+  }
+
+  loadCartCount(): void {
+
+    this.cartService.getCart().subscribe({
+
+      next: (cart) => {
+
+        this.cartCount = cart.items.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
+
+        console.log('Cart count:', this.cartCount);
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+        console.error('Failed to load cart count:', error);
+      }
+
+    });
+  }
+
+  goToCart(): void {
+    this.router.navigate(['/cart']);
+  }
+
+  
 }

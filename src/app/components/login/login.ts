@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
 
 import { AuthService } from '../../services/auth';
 
@@ -15,7 +17,7 @@ export class Login {
   username = '';
   password = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   login(): void {
 
@@ -36,6 +38,9 @@ export class Login {
 
         console.log('JWT stored successfully');
         console.log('User stored:', response.user);
+        
+        this.router.navigate(['/products']);
+
 
       },
 

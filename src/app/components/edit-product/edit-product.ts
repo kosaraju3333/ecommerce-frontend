@@ -63,4 +63,34 @@ export class EditProduct implements OnInit {
 
     });
   }
+  updateProduct(): void {
+
+    if (!this.product) {
+      return;
+    }
+
+    console.log('Updating product:', this.product);
+
+    this.productService
+      .updateProduct(this.product.id, this.product)
+      .subscribe({
+
+        next: (response) => {
+
+          console.log('Product updated successfully:', response);
+
+          alert('Product updated successfully');
+
+          this.router.navigate(['/products']);
+        },
+
+        error: (error) => {
+
+          console.error('Failed to update product:', error);
+
+          alert('Failed to update product');
+        }
+
+      });
+  }
 }
