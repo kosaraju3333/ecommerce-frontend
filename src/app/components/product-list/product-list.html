@@ -23,6 +23,13 @@
       </button>
 
     </div>
+    <button
+      *ngIf="isLoggedIn()"
+      class="logout-button"
+      (click)="logout()"
+    >
+      Logout
+    </button>
 
   </div>
 

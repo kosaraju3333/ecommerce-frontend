@@ -40,6 +40,14 @@ export class ProductList implements OnInit {
     return this.authService.isLoggedIn();
   }
 
+  logout(): void {
+
+    this.authService.logout();
+
+    this.router.navigate(['/login']);
+  }
+
+
   ngOnInit(): void {
     this.loadProducts();
 

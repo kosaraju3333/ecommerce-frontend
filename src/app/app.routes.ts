@@ -13,6 +13,12 @@ import { adminGuard } from './guards/admin-guard';
 
 export const routes: Routes = [
   {
+    path: 'register',
+    loadComponent: () =>
+      import('./components/register/register')
+        .then(m => m.Register)
+  },
+  {
     path: 'login',
     component: Login
   },

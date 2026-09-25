@@ -7,6 +7,12 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface RegisterRequest {
+  username: string;
+  email: string;
+  password: string;
+}
+
 export interface User {
   id: number;
   username: string;
@@ -33,6 +39,25 @@ export class AuthService {
   user$ = this.userSubject.asObservable();
 
   constructor(private http: HttpClient) {}
+
+  register(
+    username: string,
+    email: string,
+    password: string
+  ): Observable<any> {
+
+    const registerData: RegisterRequest = {
+      username,
+      email,
+      password
+    };
+
+    return this.http.post(
+      `${this.apiUrl}/register`,
+      registerData
+    );
+  }
+
 
   login(
     username: string,
