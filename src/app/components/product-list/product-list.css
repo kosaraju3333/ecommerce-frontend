@@ -179,3 +179,21 @@ button:hover {
 .logout-button:active {
   transform: translateY(0);
 }
+
+.orders-button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+
+  background: #5e9059;
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.orders-button:hover {
+  opacity: 0.9;
+}

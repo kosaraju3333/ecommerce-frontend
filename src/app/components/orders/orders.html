@@ -1,0 +1,168 @@
+<div class="orders-page">
+
+  <div class="orders-container">
+
+    <div class="page-header">
+
+      <div>
+        <h1>My Orders</h1>
+
+        <p>
+          View your previous purchases
+        </p>
+      </div>
+
+      <button
+        class="continue-button"
+        (click)="goToProducts()"
+      >
+        ← Continue Shopping
+      </button>
+
+    </div>
+
+
+    <!-- Loading -->
+
+    <div
+      class="message"
+      *ngIf="loading"
+    >
+      Loading orders...
+    </div>
+
+
+    <!-- Error -->
+
+    <div
+      class="error-message"
+      *ngIf="errorMessage"
+    >
+      {{ errorMessage }}
+    </div>
+
+
+    <!-- No Orders -->
+
+    <div
+      class="empty-orders"
+      *ngIf="
+        !loading &&
+        !errorMessage &&
+        orders.length === 0
+      "
+    >
+
+      <h2>No orders yet</h2>
+
+      <p>
+        You haven't placed any orders yet.
+      </p>
+
+      <button
+        (click)="goToProducts()"
+      >
+        Start Shopping
+      </button>
+
+    </div>
+
+
+    <!-- Orders -->
+
+    <div
+      class="order-card"
+      *ngFor="let order of orders"
+    >
+
+      <div class="order-header">
+
+        <div>
+          <span class="label">
+            Order
+          </span>
+
+          <strong>
+            #{{ order.id }}
+          </strong>
+        </div>
+
+
+        <div>
+          <span class="label">
+            Date
+          </span>
+
+          <strong>
+            {{ order.created_at | date:'medium' }}
+          </strong>
+        </div>
+
+
+        <div>
+          <span class="label">
+            Total
+          </span>
+
+          <strong>
+            ₹{{ order.total_amount }}
+          </strong>
+        </div>
+
+
+        <div>
+          <span
+            class="status"
+            [class.placed]="order.status === 'PLACED'"
+          >
+            {{ order.status }}
+          </span>
+        </div>
+
+      </div>
+
+
+      <div class="order-items">
+
+        <div
+          class="order-item"
+          *ngFor="let item of order.items"
+        >
+
+          <div class="item-info">
+
+            <h3>
+              {{ item.product_name }}
+            </h3>
+
+            <p>
+              Product ID:
+              {{ item.product_id }}
+            </p>
+
+          </div>
+
+
+          <div class="item-price">
+
+            <span>
+              ₹{{ item.price }}
+              ×
+              {{ item.quantity }}
+            </span>
+
+            <strong>
+              ₹{{ item.subtotal }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

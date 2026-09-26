@@ -22,6 +22,14 @@
         🛒 Cart ({{ cartCount }})
       </button>
 
+      <button
+        *ngIf="isLoggedIn()"
+        class="orders-button"
+        (click)="goToOrders()"
+      >
+        📦 My Orders
+      </button>
+
     </div>
     <button
       *ngIf="isLoggedIn()"

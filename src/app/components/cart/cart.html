@@ -96,6 +96,16 @@
       </h2>
 
     </div>
+    <button
+      class="checkout-button"
+      (click)="checkout()"
+      [disabled]="checkingOut"
+    >
+      {{ checkingOut
+          ? 'Placing Order...'
+          : 'Proceed to Checkout'
+      }}
+    </button>
 
   </div>
 

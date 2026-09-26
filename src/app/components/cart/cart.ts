@@ -8,6 +8,10 @@ import {
   CartItem
 } from '../../services/cart';
 
+import {
+  OrderService,
+  Order
+} from '../../services/order';
 
 @Component({
   selector: 'app-cart',
@@ -21,8 +25,12 @@ export class CartComponent implements OnInit {
   cart: Cart | null = null;
   loading = true;
 
+  checkingOut = false;
+  checkoutError = '';
+
   constructor(
     private cartService: CartService,
+    private orderService: OrderService,
     private cdr: ChangeDetectorRef,
     private router: Router
 
@@ -146,5 +154,66 @@ export class CartComponent implements OnInit {
 
       });
   }
+
+  checkout(): void {
+
+    if (!this.cart || this.cart.items.length === 0) {
+      alert('Your cart is empty');
+      return;
+    }
+
+    const confirmed = confirm(
+      `Place order for ₹${this.cart.total}?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.checkingOut = true;
+    this.checkoutError = '';
+
+    this.orderService.checkout().subscribe({
+
+      next: (order: Order) => {
+
+        console.log(
+          'Order placed:',
+          order
+        );
+
+        this.checkingOut = false;
+
+        alert(
+          `Order #${order.id} placed successfully!`
+        );
+
+        // Reload because backend cleared the cart
+        this.loadCart();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Checkout failed:',
+          error
+        );
+
+        this.checkingOut = false;
+
+        if (error.error?.detail) {
+          this.checkoutError =
+            error.error.detail;
+        } else {
+          this.checkoutError =
+            'Checkout failed. Please try again.';
+        }
+
+        this.cdr.detectChanges();
+      }
+
+    });
+  }
+
 
 }

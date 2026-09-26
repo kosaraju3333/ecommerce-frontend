@@ -101,3 +101,24 @@ button:hover {
   transform: none;
   box-shadow: none;
 }
+
+.error-message {
+  margin: 0 0 15px;
+  padding: 10px 12px;
+
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+
+  color: #b91c1c;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  text-align: center;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

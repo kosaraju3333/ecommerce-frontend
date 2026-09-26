@@ -194,5 +194,9 @@ export class ProductList implements OnInit {
     this.router.navigate(['/cart']);
   }
 
+  goToOrders(): void {
+    this.router.navigate(['/orders']);
+  }
+
   
 }

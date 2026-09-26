@@ -30,7 +30,7 @@ export interface LoginResponse {
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8000/api/auth';
+  private apiUrl = 'http://localhost:8001/api/auth';
 
   private userSubject = new BehaviorSubject<User | null>(
     this.getStoredUser()

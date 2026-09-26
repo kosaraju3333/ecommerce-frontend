@@ -30,7 +30,7 @@ export interface Cart {
 })
 export class CartService {
 
-  private apiUrl = 'http://localhost:8000/api/cart';
+  private apiUrl = 'http://localhost:8003/api/cart';
 
   constructor(private http: HttpClient) {}
 

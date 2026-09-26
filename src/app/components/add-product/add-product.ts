@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Product } from '../../models/product';
 import { ProductService } from '../../services/product';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-add-product',
   standalone: true,
@@ -26,7 +28,10 @@ export class AddProduct {
     is_active: true
   };
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private router: Router
+    ) {}
 
   addProduct(): void {
 
@@ -38,6 +43,9 @@ export class AddProduct {
         console.log('Product created successfully:', response);
 
         alert('Product added successfully!');
+
+        // Redirect admin back to product list
+        this.router.navigate(['/products']);
 
         this.resetForm();
       },
@@ -67,4 +75,8 @@ export class AddProduct {
     };
 
   }
+  goToProducts(): void {
+    this.router.navigate(['/products']);
+  }
+
 }
