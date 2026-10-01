@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -30,7 +31,7 @@ export interface LoginResponse {
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8001/api/auth';
+  private apiUrl = `${environment.apiUrl}/api/auth`;
 
   private userSubject = new BehaviorSubject<User | null>(
     this.getStoredUser()

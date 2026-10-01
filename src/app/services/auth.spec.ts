@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { TestBed } from '@angular/core/testing';
 import {
   provideHttpClient,
@@ -59,7 +60,8 @@ describe('AuthService', () => {
       });
 
     const req = httpMock.expectOne(
-      'http://localhost:8001/api/auth/login'
+      // 'http://localhost:8001/api/auth/login'
+      `${environment.apiUrl}/api/auth/login`
     );
 
     expect(req.request.method).toBe('POST');
@@ -86,7 +88,7 @@ describe('AuthService', () => {
       });
 
     const req = httpMock.expectOne(
-      'http://localhost:8001/api/auth/register'
+      `${environment.apiUrl}/api/auth/register`
     );
 
     expect(req.request.method).toBe('POST');

@@ -1,3 +1,5 @@
+import { environment } from '../../environments/environment';
+
 import { TestBed } from '@angular/core/testing';
 import {
   provideHttpClient,
@@ -42,7 +44,7 @@ describe('OrderService', () => {
     });
 
     const req = httpMock.expectOne(
-      'http://localhost:8004/api/orders/checkout'
+      `${environment.apiUrl}/api/orders/checkout`
     );
 
     expect(req.request.method).toBe('POST');
@@ -65,7 +67,7 @@ describe('OrderService', () => {
     });
 
     const req = httpMock.expectOne(
-      'http://localhost:8004/api/orders/'
+      `${environment.apiUrl}/api/orders/`
     );
 
     expect(req.request.method).toBe('GET');
@@ -88,7 +90,7 @@ describe('OrderService', () => {
     });
 
     const req = httpMock.expectOne(
-      'http://localhost:8004/api/orders/5'
+      `${environment.apiUrl}/api/orders/5`
     );
 
     expect(req.request.method).toBe('GET');

@@ -1,3 +1,5 @@
+import { environment } from '../../environments/environment';
+
 import { TestBed } from '@angular/core/testing';
 import {
   provideHttpClient,
@@ -41,7 +43,7 @@ describe('CartService', () => {
     });
 
     const req = httpMock.expectOne(
-      'http://localhost:8003/api/cart/items'
+      `${environment.apiUrl}/api/cart/items`
     );
 
     expect(req.request.method).toBe('POST');
@@ -65,7 +67,7 @@ describe('CartService', () => {
     });
 
     const req = httpMock.expectOne(
-      'http://localhost:8003/api/cart/'
+      `${environment.apiUrl}/api/cart/`
     );
 
     expect(req.request.method).toBe('GET');
@@ -93,7 +95,7 @@ describe('CartService', () => {
     });
 
     const req = httpMock.expectOne(
-      'http://localhost:8003/api/cart/items/10'
+      `${environment.apiUrl}/api/cart/items/10`
     );
 
     expect(req.request.method).toBe('PUT');
@@ -117,7 +119,7 @@ describe('CartService', () => {
     });
 
     const req = httpMock.expectOne(
-      'http://localhost:8003/api/cart/items/10'
+      `${environment.apiUrl}/api/cart/items/10`
     );
 
     expect(req.request.method).toBe('DELETE');

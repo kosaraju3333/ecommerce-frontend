@@ -1,3 +1,5 @@
+import { environment } from '../../environments/environment';
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -30,7 +32,7 @@ export interface Cart {
 })
 export class CartService {
 
-  private apiUrl = 'http://localhost:8003/api/cart';
+  private apiUrl = `${environment.apiUrl}/api/cart`;
 
   constructor(private http: HttpClient) {}
 
