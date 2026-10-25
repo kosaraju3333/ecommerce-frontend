@@ -22,11 +22,29 @@ pipeline {
 
         stage('Identify Build') {
             steps {
-                script {
-                    echo "Branch: ${env.BRANCH_NAME}"
-                    echo "PR Number: ${env.CHANGE_ID}"
-                    echo "PR Target: ${env.CHANGE_TARGET}"
+                echo "Branch: ${env.BRANCH_NAME}"
+                echo "PR Number: ${env.CHANGE_ID}"
+                echo "PR Target: ${env.CHANGE_TARGET}"
+            }
+        }
+
+        stage('PR - Install Dependencies') {
+            when {
+                allOf {
+                    changeRequest()
+                    expression {
+                        return env.CHANGE_TARGET?.startsWith('release/')
+                    }
                 }
+            }
+
+            steps {
+                sh '''
+                    set -eu
+                    node --version
+                    npm --version
+                    npm ci
+                '''
             }
         }
 
@@ -35,7 +53,7 @@ pipeline {
                 allOf {
                     changeRequest()
                     expression {
-                        return env.CHANGE_TARGET == 'release/v1.0'
+                        return env.CHANGE_TARGET?.startsWith('release/')
                     }
                 }
             }
@@ -55,9 +73,6 @@ pipeline {
                     steps {
                         sh '''
                             set -eu
-                            node --version
-                            npm --version
-                            npm ci
                             npm test -- --watch=false
                         '''
                     }
@@ -67,8 +82,25 @@ pipeline {
                     steps {
                         sh '''
                             set -eu
-                            npm ci
                             npx ng build --configuration production
+                        '''
+                    }
+                }
+
+                stage('Trivy FS Scan') {
+                    steps {
+                        sh '''
+                            set -eu
+
+                            trivy fs \
+                                --scanners vuln,secret,misconfig \
+                                --severity HIGH,CRITICAL \
+                                --exit-code 0 \
+                                --skip-dirs node_modules \
+                                --skip-dirs .git \
+                                --skip-dirs dist \
+                                --format table \
+                                .
                         '''
                     }
                 }
