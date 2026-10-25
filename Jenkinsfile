@@ -106,16 +106,53 @@ pipeline {
                 }
             }
         }
-    }
 
-    post {
-        success {
-            echo 'Angular Frontend PR Validation PASSED.'
+        stage('Release - Code Quality Validation') {
+
+            when {
+                allOf {
+                    not {
+                        changeRequest()
+                    }
+                    expression {
+                        return env.BRANCH_NAME?.startsWith('release/')
+                    }
+                }  
+            }
+
+            stages {
+
+                stage('SonarQube Analysis') {
+                    steps {
+                        script {
+                            def scannerHome = tool 'SonarScanner'
+
+                            withSonarQubeEnv('SonarQube-Server') {
+                                sh """
+                                    ${scannerHome}/bin/sonar-scanner \
+                                    -Dsonar.projectKey=ecommerce-frontend \
+                                    -Dsonar.sources=src \
+                                    -Dsonar.tests=src \
+                                    '-Dsonar.test.inclusions=**/*.spec.ts' \
+                                    '-Dsonar.exclusions=**/*.spec.ts' \
+                                    '-Dsonar.javascript.lcov.reportPaths=coverage/lcov.info'
+                                """
+                            }
+                        }
+                    }
+                }
+                       
+                stage('SonarQube Quality Gate') {
+                    steps {
+                        timeout(time: 10, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
+                    }
+                }
+
+            }
         }
 
-        failure {
-            echo 'Angular Frontend PR Validation FAILED.'
-        }
     }
 }
 
