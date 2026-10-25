@@ -153,6 +153,64 @@ pipeline {
             }
         }
 
+        stage('Release - Angular Build') {
+            when {
+                allOf {
+                    not { changeRequest() }
+                    expression {
+                        return env.BRANCH_NAME?.startsWith('release/')
+                    }
+                }
+            }
+
+            steps {
+                sh '''
+                    set -eu
+
+                    echo "Building Angular frontend..."
+
+                    npm run build
+
+                    echo "Build output:"
+                    find dist -maxdepth 3 -type f | head -30
+                '''
+            }
+        }
+
+        stage('Release - Deploy to S3') {
+            when {
+                allOf {
+                    not { changeRequest() }
+                    expression {
+                        return env.BRANCH_NAME?.startsWith('release/')
+                    }
+                }
+            }
+
+            steps {
+                sh '''
+                    set -eu
+
+                    BUCKET="ecommerce-staging-frontend-spontansolutions"
+                    BUILD_DIR="dist/ecommerce-frontend/browser"
+
+                    echo "Verifying Angular build output..."
+
+                    test -f "$BUILD_DIR/index.html"
+
+                    echo "Uploading frontend to S3..."
+
+                    aws s3 sync \
+                        "$BUILD_DIR/" \
+                        "s3://$BUCKET/" \
+                        --region us-east-1 \
+                        --delete
+
+                    echo "S3 deployment completed successfully."
+                '''
+            }
+        }
+
     }
 }
 
