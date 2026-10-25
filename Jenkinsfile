@@ -130,7 +130,7 @@ pipeline {
                             withSonarQubeEnv('SonarQube-Server') {
                                 sh """
                                     ${scannerHome}/bin/sonar-scanner \
-                                    -Dsonar.projectKey=ecommerce-frontend \
+                                    -Dsonar.projectKey=ecommerce-frontend-staging \
                                     -Dsonar.sources=src \
                                     -Dsonar.tests=src \
                                     '-Dsonar.test.inclusions=**/*.spec.ts' \
@@ -166,6 +166,16 @@ pipeline {
             steps {
                 sh '''
                     set -eu
+
+                    echo "Checking Node.js and npm..."
+                    node --version
+                    npm --version
+
+                    echo "Installing Angular dependencies..."
+                    npm ci
+
+                    echo "Verifying Angular CLI..."
+                    ./node_modules/.bin/ng version
 
                     echo "Building Angular frontend..."
 
