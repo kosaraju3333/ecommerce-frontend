@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node22'
+        nodejs 'node24'
     }
 
     options {
@@ -82,7 +82,7 @@ pipeline {
                     steps {
                         sh '''
                             set -eu
-                            npx ng build --configuration production
+                            npm run build
                         '''
                     }
                 }
