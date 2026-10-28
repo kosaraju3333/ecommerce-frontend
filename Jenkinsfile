@@ -6,6 +6,11 @@ pipeline {
         nodejs 'node24'
     }
 
+    environment {
+        AWS_DEFAULT_REGION = 'us-east-1'
+        CLOUDFRONT_DISTRIBUTION_ID = 'E3IG4HEHVJM25T'
+    }
+
     options {
         timestamps()
         disableConcurrentBuilds()
@@ -217,6 +222,35 @@ pipeline {
                         --delete
 
                     echo "S3 deployment completed successfully."
+                '''
+            }
+        }
+
+        stage('Release - Invalidate CloudFront Cache') {
+            when {
+                allOf {
+                    not { changeRequest() }
+                    expression {
+                        return env.BRANCH_NAME?.startsWith('release/')
+                    }
+                }
+            }
+
+            steps {
+                sh '''
+                    INVALIDATION_ID=$(aws cloudfront create-invalidation \
+                        --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
+                        --paths "/*" \
+                        --query 'Invalidation.Id' \
+                        --output text)
+
+                    echo "Invalidation created: $INVALIDATION_ID"
+
+                    aws cloudfront wait invalidation-completed \
+                        --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
+                        --id "$INVALIDATION_ID"
+
+                    echo "CloudFront invalidation completed"
                 '''
             }
         }
