@@ -230,10 +230,7 @@ pipeline {
 
                     echo "LCOV coverage report generated successfully."
 
-                    // echo "Coverage files:"
-                    // find coverage -maxdepth 3 -type f | head -30
-
-                    // test -f coverage/lcov.info
+                    
                 '''
             }
         }
@@ -298,7 +295,6 @@ pipeline {
                                 '-Dsonar.test.inclusions=**/*.spec.ts' \
                                 '-Dsonar.exclusions=**/*.spec.ts' \
                                 -Dsonar.javascript.lcov.reportPaths=coverage/ecommerce-frontend/lcov.info \
-                                // -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
                                 -Dsonar.nodejs.executable=\$(command -v node)
                         """
                     }
