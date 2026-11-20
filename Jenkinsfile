@@ -88,7 +88,8 @@ pipeline {
                     steps {
                         sh '''
                             set -eu
-                            npm test -- --watch=false
+                            npm test -- --watch=false --coverage
+                            test -f coverage/lcov.info
                         '''
                     }
                 }
@@ -208,21 +209,44 @@ pipeline {
             }
         }
 
-        stage('Master - Unit Tests') {
+
+
+        stage('Master - Unit Tests & Coverage') {
             when {
                 allOf {
                     not { changeRequest() }
                     branch 'master'
                 }
             }
-
             steps {
                 sh '''
                     set -eu
-                    npm test -- --watch=false
+
+                    npm test -- --watch=false --coverage
+
+                    echo "Coverage files:"
+                    find coverage -maxdepth 3 -type f | head -30
+
+                    test -f coverage/lcov.info
                 '''
             }
         }
+
+        // stage('Master - Unit Tests') {
+        //     when {
+        //         allOf {
+        //             not { changeRequest() }
+        //             branch 'master'
+        //         }
+        //     }
+
+        //     steps {
+        //         sh '''
+        //             set -eu
+        //             npm test -- --watch=false
+        //         '''
+        //     }
+        // }
 
         stage('Master - Angular Build') {
             when {
@@ -267,6 +291,7 @@ pipeline {
                                 -Dsonar.tests=src \
                                 '-Dsonar.test.inclusions=**/*.spec.ts' \
                                 '-Dsonar.exclusions=**/*.spec.ts' \
+                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
                                 -Dsonar.nodejs.executable=\$(command -v node)
                         """
                     }
