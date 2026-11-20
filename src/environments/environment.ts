@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://api-staging.spontansolutions.com'
+  apiUrl: 'https://api-prod.spontansolutions.com'
 };
